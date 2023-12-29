@@ -15,9 +15,9 @@ AudioFilePlayerAudioProcessor::AudioFilePlayerAudioProcessor()
      : AudioProcessor (BusesProperties()
                      #if ! JucePlugin_IsMidiEffect
                       #if ! JucePlugin_IsSynth
-                       .withInput  ("Input",  juce::AudioChannelSet::stereo(), true)
+                       .withInput  ("Input",  juce::AudioChannelSet::discreteChannels(128), true)
                       #endif
-                       .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
+                       .withOutput ("Output", juce::AudioChannelSet::discreteChannels(128), true)
                      #endif
                        )
 #endif
@@ -117,8 +117,8 @@ bool AudioFilePlayerAudioProcessor::isBusesLayoutSupported (const BusesLayout& l
     // In this template code we only support mono or stereo.
     // Some plugin hosts, such as certain GarageBand versions, will only
     // load plugins that support stereo bus layouts.
-    if (layouts.getMainOutputChannelSet() != juce::AudioChannelSet::mono()
-     && layouts.getMainOutputChannelSet() != juce::AudioChannelSet::stereo())
+    if ((layouts.getMainOutputChannelSet() != juce::AudioChannelSet::mono())
+     && (layouts.getMainOutputChannelSet() != juce::AudioChannelSet::stereo()))
         return false;
 
     // This checks if the input layout matches the output layout
@@ -135,8 +135,10 @@ bool AudioFilePlayerAudioProcessor::isBusesLayoutSupported (const BusesLayout& l
 void AudioFilePlayerAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     juce::ScopedNoDenormals noDenormals;
-    auto totalNumInputChannels  = getTotalNumInputChannels();
-    auto totalNumOutputChannels = getTotalNumOutputChannels();
+//    auto totalNumInputChannels  = getTotalNumInputChannels();
+//    auto totalNumOutputChannels = getTotalNumOutputChannels();
+    auto totalNumInputChannels = 128;
+    auto totalNumOutputChannels = 128;
 
     // In case we have more outputs than inputs, this code clears any output
     // channels that didn't contain input data, (because these aren't
@@ -161,7 +163,7 @@ void AudioFilePlayerAudioProcessor::processBlock (juce::AudioBuffer<float>& buff
         transportSource.setSource(activeSource->currentAudioFileSource.get(),
                                   32768,
                                   &directoryScannerBackgroundThread,
-                                  activeSource->audioFileSourceSampleRate);
+                                  activeSource->audioFileSourceSampleRate, 128);
         sourceHasChanged.set(true);
     }
     
