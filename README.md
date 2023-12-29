@@ -1,5 +1,7 @@
-# AudioFilePlayer
+# Multichannel AudioFilePlayer
 A port of the juce AudioFilePlayerDemo into Plugin format
+
+Forked from [matkatmusic/AudioFilePlayer](https://github.com/matkatmusic/AudioFilePlayer), but modified so that it has 128 channels
 
 When you clone this repository, be sure to enable "RECURSE SUBMODULES" in whatever tool you're using the clone, so that the correct version of juce that this plugin is built with is also cloned.
 
